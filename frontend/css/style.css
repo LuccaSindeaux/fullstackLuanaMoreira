@@ -1,0 +1,686 @@
+/* Reset e estilos globais */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat Alternates", sans-serif;
+}
+
+body {
+  background: white;
+  overflow-x: hidden;
+  font-size: 16px;
+  position: relative;
+}
+
+/* Header */
+.header {
+  width: 100%;
+  height: 110px;
+  background: #476e52;
+  border-bottom: 1px solid black;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+}
+
+.logo,
+.logo-empresa {
+  width: 240px;
+  height: 85px;
+}
+
+.logo-empresa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.logo-empresa img:hover {
+  transform: scale(1.05);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: black;
+  font-size: 1.2rem;
+  font-family: "Kalam", cursive;
+  font-weight: 400;
+  text-decoration: none;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.nav-links a:hover {
+  color: #e2a091;
+}
+
+/* Menu hamburguer */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  z-index: 110;
+  transition: background 0.3s ease;
+  border-radius: 50%;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-toggle span {
+  display: block;
+  background-color: white;
+  height: 2px;
+  width: 22px;
+  margin: 3.5px 0;
+  border-radius: 1px;
+  transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle.active span:nth-child(1) {
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+
+/* Conteúdo principal */
+.main-content {
+  margin-top: 80px;
+}
+
+/* Boas-vindas */
+.welcome-section {
+  position: relative;
+  height: 90vh;
+  min-height: 500px;
+  background: #d9d9d9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+/* Ajuste do título */
+.welcome-title {
+  color: black;
+  font-size: 2.5rem; /* Aumentei um pouco o tamanho */
+  font-family: "Kalam", cursive;
+  font-weight: 400;
+  margin-top: 30px;
+  padding: 0 20px; /* Para não colar nas bordas em mobile */
+}
+
+/* Faixa branca com o título */
+.welcome-banner {
+  width: 100%;
+  height: 150px; /* Altura fixa para a faixa branca */
+  display: flex;
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
+  background: white;
+  text-align: center;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex-direction: row; /* Para alinhar imagem e texto lado a lado */
+  gap: 15px; /* Espaço entre imagem e texto */
+}
+
+.schedule-button {
+  position: relative;
+  z-index: 2;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.schedule-button:hover {
+  background-color: #e6e6e6;
+  transform: scale(1.05);
+}
+
+.schedule-button {
+  width: 280px;
+  height: 50px;
+  background: #8e8e8e;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  font-family: "Kalam", cursive;
+  font-weight: 400;
+  text-decoration: none;
+  margin-top: 2rem;
+  transition: background 0.3s;
+}
+
+.schedule-button:hover {
+  background: #787878;
+}
+
+/* Seção de descrição */
+.description-section {
+  margin-top: 7rem;
+  text-align: center;
+}
+
+.description-text {
+  color: black;
+  font-size: 1.3rem;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Seções genéricas */
+.section {
+  padding: 4rem 5%;
+  position: relative;
+}
+
+/* Slider */
+.slider-section {
+  padding: 4rem 5%;
+  text-align: center;
+}
+
+.slider-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.slider {
+  display: flex;
+  transition: transform 0.5s ease;
+  width: 100%;
+}
+
+.slide {
+  min-width: 100%;
+}
+
+.slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(71, 110, 82, 0.7);
+  color: white;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  z-index: 10;
+  transition: all 0.3s;
+}
+
+.slider-btn:hover {
+  background: #476e52;
+}
+
+.prev-btn {
+  left: 10px;
+}
+.next-btn {
+  right: 10px;
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 10px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: #476e52;
+}
+
+/* Sobre */
+.sobre-section {
+  background-color: #476e52;
+  padding: 40px 20px;
+  margin: 150px 0;
+  color: #fff;
+  text-align: center;
+}
+
+.sobre-container {
+  
+  height: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sobre-texto-imagem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 45px;
+  flex-wrap: wrap;
+}
+
+.sobre-imagem img {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sobre-texto {
+  max-width: 680px;
+  text-align: left;
+}
+
+.sobre-texto p {
+  font-size: 1.5em;
+  line-height: 1.6;
+}
+
+/* Contato */
+.contact-section {
+  background: #476e52;
+  padding: 4rem 5%;
+}
+
+.contact-title {
+  color: #f4baac;
+  font-size: 2.5rem;
+  font-family: "Kalam", cursive;
+  font-weight: 700;
+  text-align: center;
+}
+
+.phone {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.social-title {
+  color: #e2a091;
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  
+}
+
+.social-icon {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #476e52;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+}
+
+.social-icon:hover {
+  background: #e2a091;
+  color: white;
+}
+
+/* Rodapé */
+.footer-menu {
+  height: 80px;
+  background: #e2a091;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.footer-menu a {
+  color: black;
+  font-size: 1.1rem;
+  font-family: "Kalam", cursive;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-menu a:hover {
+  color: #ffffff;
+}
+
+.footer-final {
+  height: 80px;
+  background: #476e52;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signature {
+  color: white;
+  font-size: 1rem;
+}
+
+.section-title {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+/* Planos */
+#planos .section-title {
+  margin-top: 6rem;
+}
+
+.planos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.plano-banner {
+  display: flex;
+  flex-direction: row;
+  background: #f5f5f5;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.plano-banner.reverse {
+  flex-direction: row-reverse;
+}
+
+.plano-img {
+  width: 50%;
+  min-height: 550px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.plano-info {
+  width: 50%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  background-color: #f5f5f5;
+  font-family: "Kalam", cursive;
+}
+
+.plano-info h3 {
+  font-size: 1.6rem;
+}
+
+.plano-info h4 {
+  font-size: 1.3rem;
+}
+
+.plano-info p {
+  font-size: 1.4rem;
+
+}
+
+.btn-plano {
+  display: inline-block;
+  background: #e2a091;
+  color: white;
+  padding: 12px 20px;
+  margin-top: 1rem;
+  border-radius: 30px;
+  font-family: "Kalam", cursive;
+  font-size: 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.btn-plano:hover {
+  background: #d08074;
+}
+
+/* Modal de Login */
+.login-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.login-modal {
+  margin-bottom: 20px;
+}
+
+.modal-content {
+  background: white;
+  margin: 10% auto;
+  padding: 25px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+  position: relative;
+  animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close-modal {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-modal:hover {
+  color: #476e52;
+}
+
+/* Formulário */
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#loginForm input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+#loginForm button {
+  background: #476e52;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.forgot-password {
+  text-align: center;
+  display: block;
+  margin-top: 10px;
+  color: #476e52;
+}
+
+.auth-form a {
+  color: #e2a091;
+  text-decoration: none;
+}
+
+.auth-form a:hover {
+  text-decoration: underline;
+}
+
+ .auth-form input:focus {
+  border-color: #e2a091 !important;
+  outline: none;
+}
+
+/* Estilo para Login e Recuperação de Senha */
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 95vh;
+  margin-top: 70px;
+  background-color: #f8f9fa;
+  font-family: "Montserrat Alternates", sans-serif;
+}
+
+.auth-page h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #e2a091;
+  text-align: center;
+}
+
+.auth-page .auth-form {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-page .auth-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.auth-page .auth-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.auth-page .auth-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #e2a091;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auth-page .auth-form button:hover {
+  background-color: rgb(218, 145, 128);
+}
+
+.auth-page .auth-form p {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.auth-page .auth-form a {
+  color: #e2a091;
+  text-decoration: none;
+}
+
+.auth-page .auth-form a:hover {
+  text-decoration: underline;
+}

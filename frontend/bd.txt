@@ -1,0 +1,19 @@
+-- Admin: Luana
+INSERT INTO usuarios (nome, email, senha, is_admin)
+VALUES ('Luana Moreira', 'luana@fisioweb.com', SHA2('senhaLuana123', 256), 1);
+
+-- Usuário comum
+INSERT INTO usuarios (nome, email, senha, is_admin)
+VALUES ('João da Silva', 'joao@email.com', SHA2('.then((data) => {
+  const btnSair = document.getElementById("btn-sair");
+  const btnLogin = document.getElementById("btn-login");
+
+  if (data.logado) {
+    if (btnSair) btnSair.style.display = "block";
+    if (btnLogin) btnLogin.style.display = "none";
+  } else {
+    if (btnSair) btnSair.style.display = "none";
+    if (btnLogin) btnLogin.style.display = "block";
+  }
+})
+', 256), 0);

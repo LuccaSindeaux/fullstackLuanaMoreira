@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Luana Moreira</title>
+    <!-- Fontes e ícones -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Montserrat+Alternates:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/paginas.css" />
+    <link rel="stylesheet" href="../css/responsivo.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header class="header">
+      <a href="../index.html">
+        <div class="logo-empresa">
+          <img src="../imagens/logo.webp" alt="Logo da empresa" />
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="../index.html">Início</a>
+        <a href="planos.html">Planos</a>
+        <a href="agenda.html">Agenda</a>
+        <a href="dashboard.html" class="ativo">Dashboard</a>
+        <a id="btn-sair">Sair</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <!-- Seção de Perfil -->
+      <section class="card">
+        <h2>Editar Perfil</h2>
+        <form id="form-perfil">
+          <label>Nome: <input type="text" name="nome" required /></label>
+          <label>E-mail: <input type="email" name="email" required /></label>
+          <label>Senha: <input type="password" name="senha" /></label>
+          <button type="submit">Salvar</button>
+        </form>
+      </section>
+
+      <!-- Seção de Disponibilidade -->
+      <section class="card">
+        <h2>Configurar Disponibilidade</h2>
+        <div id="calendario-disponibilidade"></div>
+        <p>
+          <span class="legend green"></span> Disponível &nbsp;
+          <span class="legend gray"></span> Indisponível/Lotado
+        </p>
+      </section>
+
+      <!-- Seção de Clientes -->
+      <section class="card">
+        <h2>Ficha dos Clientes</h2>
+        <div id="lista-clientes"></div>
+      </section>
+
+      <!-- Modal Editar -->
+      <div id="modalEditar" class="modal" style="display: none">
+        <div class="modal-content">
+          <h3>Editar Disponibilidade</h3>
+          <p id="infoEvento"></p>
+          <label>
+            Status:
+            <select id="selectStatus">
+              <option value="disponivel">Disponível</option>
+              <option value="indisponivel">Indisponível</option>
+            </select>
+          </label>
+          <div style="margin-top: 1rem">
+            <button id="btnSalvarEdicao">Salvar</button>
+            <button id="btnCancelarEdicao">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Excluir -->
+      <div id="modalExcluir" class="modal" style="display: none">
+        <div class="modal-content">
+          <h3>Excluir Disponibilidade</h3>
+          <p>Tem certeza que deseja excluir este evento?</p>
+          <div style="margin-top: 1rem">
+            <button id="btnConfirmarExcluir">Excluir</button>
+            <button id="btnCancelarExcluir">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <style>
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .modal-content {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        min-width: 300px;
+        max-width: 90%;
+      }
+    </style>
+    <style>
+      .container {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .card {
+        background-color: #f4f4f4;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+
+      form label,
+      .ficha-cliente label {
+        display: block;
+        margin-bottom: 1rem;
+      }
+
+      .ficha-cliente {
+        background: white;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .legend {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+      }
+
+      .green {
+        background-color: #27ae60;
+      }
+
+      .gray {
+        background-color: #7f8c8d;
+      }
+    </style>
+    <footer>
+      <div class="footer-final">
+        <p class="signature">Luana Moreira Fisioterapia e Hatha Yoga</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/pt-br.js"></script>
+    <script src="../js/index.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const calendarEl = document.getElementById(
+          "calendario-disponibilidade"
+        );
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          selectable: true,
+          select: function (info) {
+            const isAvailable = confirm("Marcar esta data como disponível?");
+            if (isAvailable) {
+              calendar.addEvent({
+                title: "Disponível",
+                start: info.startStr,
+                backgroundColor: "#27ae60",
+                borderColor: "#27ae60",
+                allDay: true,
+              });
+            } else {
+              calendar.addEvent({
+                title: "Indisponível",
+                start: info.startStr,
+                backgroundColor: "#7f8c8d",
+                borderColor: "#7f8c8d",
+                allDay: true,
+              });
+            }
+          },
+        });
+
+        calendar.render();
+      });
+    </script>
+  </body>
+</html>
