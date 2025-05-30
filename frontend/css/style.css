@@ -16,9 +16,8 @@ body {
 /* Header */
 .header {
   width: 100%;
-  height: 110px;
+  height: 100px;
   background: #476e52;
-  border-bottom: 1px solid black;
   position: fixed;
   top: 0;
   z-index: 100;
@@ -28,10 +27,16 @@ body {
   padding: 0 5%;
 }
 
-.logo,
-.logo-empresa {
-  width: 240px;
+.logo, .logo-empresa {
+  width: 285px;
   height: 85px;
+}
+
+.logo-empresa {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-empresa img {
@@ -42,26 +47,25 @@ body {
 }
 
 .logo-empresa img:hover {
-  transform: scale(1.05);
+  transform: scale(1.0);
 }
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 6.25rem;
 }
 
 .nav-links a {
-  color: black;
-  font-size: 1.2rem;
-  font-family: "Kalam", cursive;
-  font-weight: 400;
+  color: white;
+  font-size: 1.875rem;
+  font-family: "Kalam";
+  font-weight: 600;
   text-decoration: none;
   transition: color 0.3s;
-  cursor: pointer;
 }
 
 .nav-links a:hover {
-  color: #e2a091;
+  color: #f4baac;
 }
 
 /* Menu hamburguer */
@@ -72,6 +76,7 @@ body {
   align-items: center;
   width: 36px;
   height: 36px;
+  cursor: pointer;
   z-index: 110;
   transition: background 0.3s ease;
   border-radius: 50%;
@@ -105,7 +110,7 @@ body {
 
 /* Conteúdo principal */
 .main-content {
-  margin-top: 80px;
+  margin-top: 100px;
 }
 
 /* Boas-vindas */
@@ -138,9 +143,9 @@ body {
 .welcome-title {
   color: black;
   font-size: 2.5rem; /* Aumentei um pouco o tamanho */
-  font-family: "Kalam", cursive;
-  font-weight: 400;
-  margin-top: 30px;
+  font-family: "Montserrat Alternates", sans-serif, cursive;
+  font-weight: 600;
+  margin: 0;
   padding: 0 20px; /* Para não colar nas bordas em mobile */
 }
 
@@ -177,39 +182,41 @@ body {
   transform: scale(1.05);
 }
 
+
 .schedule-button {
-  width: 280px;
-  height: 50px;
-  background: #8e8e8e;
+  width: 300px;
+  height: 60px;
+  background: #f4baac;
   border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.3rem;
-  font-family: "Kalam", cursive;
-  font-weight: 400;
+  font-size: 1.7rem;
+  font-family: "Kalam";
+  font-weight: bold;
   text-decoration: none;
   margin-top: 2rem;
   transition: background 0.3s;
 }
 
 .schedule-button:hover {
-  background: #787878;
+  background: #e2a091;
+  color: white;
 }
 
 /* Seção de descrição */
 .description-section {
-  margin-top: 7rem;
+  padding: 4rem 5%;
   text-align: center;
 }
 
 .description-text {
   color: black;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-family: "Montserrat Alternates", sans-serif;
   font-weight: 400;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   line-height: 1.6;
   max-width: 1000px;
   margin-left: auto;
@@ -226,6 +233,7 @@ body {
 .slider-section {
   padding: 4rem 5%;
   text-align: center;
+
 }
 
 .slider-container {
@@ -256,26 +264,23 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(71, 110, 82, 0.7);
+  background: #f4baac;
   color: white;
   border: none;
   padding: 1rem;
   cursor: pointer;
+  font-family: "montserrat Alternates" "bold";
   font-size: 1.5rem;
   z-index: 10;
   transition: all 0.3s;
 }
 
 .slider-btn:hover {
-  background: #476e52;
+  background: #e2a091;
 }
 
-.prev-btn {
-  left: 10px;
-}
-.next-btn {
-  right: 10px;
-}
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
 
 .slider-dots {
   display: flex;
@@ -294,7 +299,7 @@ body {
 }
 
 .dot.active {
-  background: #476e52;
+  background: #476E52;
 }
 
 /* Sobre */
@@ -307,7 +312,7 @@ body {
 }
 
 .sobre-container {
-  
+
   height: 500px;
   margin: 0 auto;
   display: flex;
@@ -350,9 +355,10 @@ body {
 .contact-title {
   color: #f4baac;
   font-size: 2.5rem;
-  font-family: "Kalam", cursive;
+  font-family: "Montserrat Alternates";
   font-weight: 700;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .phone {
@@ -364,7 +370,7 @@ body {
 }
 
 .social-title {
-  color: #e2a091;
+  color: white;
   font-size: 1.3rem;
   font-weight: 500;
   text-align: center;
@@ -376,7 +382,6 @@ body {
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
-  
 }
 
 .social-icon {
@@ -389,19 +394,18 @@ body {
   justify-content: center;
   color: #476e52;
   font-size: 1.5rem;
-  text-decoration: none;
   transition: background 0.3s, color 0.3s;
 }
 
 .social-icon:hover {
-  background: #e2a091;
+  background: #f4baac;
   color: white;
 }
 
 /* Rodapé */
 .footer-menu {
   height: 80px;
-  background: #e2a091;
+  background: #f4baac;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,8 +416,9 @@ body {
 
 .footer-menu a {
   color: black;
-  font-size: 1.1rem;
-  font-family: "Kalam", cursive;
+  font-size: 1.5rem;
+  font-family: "Kalam";
+  font-weight: bold;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -435,6 +440,9 @@ body {
   font-size: 1rem;
 }
 
+
+/* Planos */
+
 .section-title {
   margin-top: 1rem;
   margin-bottom: 3rem;
@@ -442,7 +450,6 @@ body {
   text-align: center;
 }
 
-/* Planos */
 #planos .section-title {
   margin-top: 6rem;
 }
@@ -500,13 +507,13 @@ body {
 
 .btn-plano {
   display: inline-block;
-  background: #e2a091;
+  background: #f4baac;
   color: white;
   padding: 12px 20px;
   margin-top: 1rem;
   border-radius: 30px;
   font-family: "Kalam", cursive;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   text-align: center;
   text-decoration: none;
   transition: background 0.3s;
@@ -525,11 +532,7 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.login-modal {
-  margin-bottom: 20px;
+  background-color: rgba(0,0,0,0.7);
 }
 
 .modal-content {
@@ -544,14 +547,8 @@ body {
 }
 
 @keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .close-modal {
@@ -564,7 +561,7 @@ body {
 }
 
 .close-modal:hover {
-  color: #476e52;
+  color: #476E52;
 }
 
 /* Formulário */
@@ -581,7 +578,7 @@ body {
 }
 
 #loginForm button {
-  background: #476e52;
+  background: #476E52;
   color: white;
   padding: 12px;
   border: none;
@@ -593,94 +590,25 @@ body {
   text-align: center;
   display: block;
   margin-top: 10px;
-  color: #476e52;
+  color: #476E52;
 }
 
-.auth-form a {
-  color: #e2a091;
-  text-decoration: none;
+.section-title-praticas{
+  margin-bottom: 10px;
 }
 
-.auth-form a:hover {
-  text-decoration: underline;
-}
-
- .auth-form input:focus {
-  border-color: #e2a091 !important;
-  outline: none;
-}
-
-/* Estilo para Login e Recuperação de Senha */
-.auth-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 95vh;
-  margin-top: 70px;
-  background-color: #f8f9fa;
-  font-family: "Montserrat Alternates", sans-serif;
-}
-
-.auth-page h1 {
-  font-size: 2rem;
+.section-title-sobre{
+  font-size: 36px;
+  color: #f4baac;
+  font-family: "Montserrat Alternates";
+  font-weight: bold;
   margin-bottom: 30px;
-  color: #e2a091;
+}
+
+.section-title-agenda{
+  margin-bottom: 10px;
   text-align: center;
-}
-
-.auth-page .auth-form {
-  background-color: #fff;
-  padding: 30px 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-.auth-page .auth-form label {
-  display: block;
-  margin-bottom: 8px;
+  font-family: "Montserrat Alternates";
+  font-size: 3.75rem;
   font-weight: 500;
-  color: #333;
-}
-
-.auth-page .auth-form input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-.auth-page .auth-form button {
-  width: 100%;
-  padding: 12px;
-  background-color: #e2a091;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.auth-page .auth-form button:hover {
-  background-color: rgb(218, 145, 128);
-}
-
-.auth-page .auth-form p {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.auth-page .auth-form a {
-  color: #e2a091;
-  text-decoration: none;
-}
-
-.auth-page .auth-form a:hover {
-  text-decoration: underline;
 }
