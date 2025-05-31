@@ -507,3 +507,14 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch((err) => console.error("Erro ao verificar login:", err));
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Supondo que API_URL já está definida no config.js incluído antes deste script
+  fetch(`${API_URL}/agendamentos/data?data=2025-06-01`)
+    .then(res => res.json())
+    .then(agendamentos => {
+      console.log(agendamentos);
+      // Aqui você pode atualizar algum calendário ou lista na página
+    })
+    .catch(err => console.error("Erro ao buscar agendamentos:", err));
+});
