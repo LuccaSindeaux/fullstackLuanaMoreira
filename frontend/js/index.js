@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      fetch(base + "php/verifica_login.php", {
+      fetch(`${API_URL}/php/verifica_login.php`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         credentials: "include",
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
       failure: () => alert("Erro ao carregar eventos"),
     },
     eventClick: function (info) {
-      fetch(base + "php/verifica_login.php", {
+      fetch(`${API_URL}/php/verifica_login.php`, {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -240,7 +240,7 @@ function confirmarLogout(e) {
   const base = getBasePath();
 
   if (confirm("Tem certeza que deseja sair?")) {
-    fetch(base + "php/logout.php", {
+    fetch(`${API_URL}/php/verifica_login.php`, {
       method: "GET",
       credentials: "include",
     })
@@ -261,7 +261,7 @@ document.getElementById("btn-sair")?.addEventListener("click", confirmarLogout);
 window.addEventListener("DOMContentLoaded", () => {
   const base = getBasePath();
 
-  fetch(base + "php/verifica_login.php", {
+  fetch(`${API_URL}/php/verifica_login.php`, {
     method: "GET",
     credentials: "include",
   })
@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const statusFull = status === "d" ? "disponivel" : "indisponivel";
 
-      fetch("../php/salvar_disponibilidade.php", {
+      fetch(`${API_URL}/php/salvar_disponibilidade.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -377,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const novoStatus = selectStatus.value;
 
-    fetch("../php/salvar_disponibilidade.php", {
+    fetch(`${API_URL}/php/salvar_disponibilidade.php`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
   btnConfirmarExcluir.addEventListener("click", () => {
     if (!eventoSelecionado) return;
 
-    fetch("../php/salvar_disponibilidade.php", {
+    fetch(`${API_URL}/php/salvar_disponibilidade.php`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: eventoSelecionado.id }),
@@ -450,14 +450,14 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const base = getBasePath();
 
-  fetch(base + "php/verifica_login.php", { credentials: "include" })
+  fetch(`${API_URL}/php/verifica_login.php`, { credentials: "include" })
     .then((res) => res.json())
     .then((data) => {
       if (data.logado) {
         const secao = document.getElementById("meus-agendamentos");
         if (secao) secao.style.display = "block";
 
-        fetch(base + "php/meus_agendamentos.php", { credentials: "include" })
+        fetch(`${API_URL}/php/meus_agendamentos.php`, { credentials: "include" })
           .then((res) => res.json())
           .then((agendamentos) => {
             const lista = document.getElementById("lista-agendamentos");
@@ -509,12 +509,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Supondo que API_URL já está definida no config.js incluído antes deste script
-  fetch(`${API_URL}/agendamentos/data?data=2025-06-01`)
-    .then(res => res.json())
-    .then(agendamentos => {
-      console.log(agendamentos);
-      // Aqui você pode atualizar algum calendário ou lista na página
-    })
-    .catch(err => console.error("Erro ao buscar agendamentos:", err));
+    const dataDeHoje = new Date().toISOString().slice(0, 10); // Pega a data de hoje no formato AAAA-MM-DD
+
+    fetch(`${API_URL}/php/meus_agendamentos.php?data=${dataDeHoje}`)
+        .then(res => res.json())
+        .then(agendamentos => {
+            console.log(`Agendamentos para a data ${dataDeHoje}:`, agendamentos);
+            // Aqui você pode usar os dados para atualizar a interface
+        })
+        .catch(err => console.error("Erro ao buscar agendamentos por data:", err));
 });
