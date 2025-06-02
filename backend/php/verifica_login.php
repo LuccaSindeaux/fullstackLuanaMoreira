@@ -1,61 +1,67 @@
 <?php
-session_start();
-header( 'Content-Type: application/json' );
+require 'conexao.php'; 
+header('Content-Type: application/json');
 
-// Verificação de sessão via GET
-if ( $_SERVER[ 'REQUEST_METHOD' ] === 'GET' ) {
-    if ( isset( $_SESSION[ 'usuario_id' ] ) ) {
-        echo json_encode( [
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_SESSION['paciente_id'])) {
+        echo json_encode([
             'logado' => true,
-            'nome' => $_SESSION[ 'usuario_nome' ],
-            'admin' => $_SESSION[ 'is_admin' ] == 1
-        ] );
+            'admin' => isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true,
+            'paciente_id' => $_SESSION['paciente_id'],
+            'nome' => $_SESSION['paciente_nome'] ?? ''
+        ]);
     } else {
-        echo json_encode( [ 'logado' => false ] );
+        echo json_encode(['logado' => false]);
     }
     exit;
 }
 
-// Se for POST, é tentativa de login
-$host = 'localhost';
-$db = 'fisio';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    $email = $input['email'] ?? '';
+    $senha = $input['senha'] ?? '';
 
-try {
-    $pdo = new PDO( "mysql:host=$host;dbname=$db;charset=$charset", $user, $pass );
-    $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-} catch ( PDOException $e ) {
-    echo json_encode( [ 'sucesso' => false, 'mensagem' => 'Erro de conexão com o banco.' ] );
-    exit;
-}
-
-$email = $_POST[ 'email' ] ?? '';
-$senha = $_POST[ 'senha' ] ?? '';
-
-$stmt = $pdo->prepare( 'SELECT * FROM usuarios WHERE email = ?' );
-$stmt->execute( [ $email ] );
-$usuario = $stmt->fetch( PDO::FETCH_ASSOC );
-
-if ( $usuario ) {
-    $senha_hash = hash( 'sha256', $senha );
-
-    if ( $senha_hash === $usuario[ 'senha' ] ) {
-        $_SESSION[ 'usuario_id' ] = $usuario[ 'id' ];
-        $_SESSION[ 'usuario_nome' ] = $usuario[ 'nome' ];
-        $_SESSION[ 'is_admin' ] = $usuario[ 'is_admin' ];
-
-        echo json_encode( [
-            'sucesso' => true,
-            'nome' => $usuario[ 'nome' ],
-            'admin' => $usuario[ 'is_admin' ] == 1
-        ] );
+    if (empty($email) || empty($senha)) {
+        http_response_code(400);
+        echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail e senha são obrigatórios.']);
         exit;
     }
+
+    try {
+        $stmt = $pdo->prepare("SELECT id, nome, senha, admin FROM pacientes WHERE email = ?");
+        $stmt->execute([$email]);
+        $paciente = $stmt->fetch();
+
+        // VERIFICAÇÃO DE SENHA SEGURA com password_verify()
+        // Compara a senha digitada com o hash seguro salvo no banco.
+        if ($paciente && password_verify($senha, $paciente['senha'])) {
+            
+            // Se o login está correto: cria as variáveis de sessão...
+            $_SESSION['paciente_id'] = $paciente['id'];
+            $_SESSION['paciente_nome'] = $paciente['nome'];
+            $_SESSION['is_admin'] = (bool)$paciente['admin'];
+
+            // ... E envia a resposta de sucesso para o JavaScript.
+            echo json_encode([
+                'sucesso' => true,
+                'nome' => $paciente['nome'],
+                'admin' => $_SESSION['is_admin']
+            ]);
+
+        } else {
+            // Se o paciente não existe ou a senha está incorreta
+            http_response_code(401); // Unauthorized
+            echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha inválidos.']);
+        }
+    } catch (PDOException $e) {
+        http_response_code(500); // Erro no servidor
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro no servidor, tente novamente mais tarde.']);
+    }
+    exit;
 }
 
-echo json_encode( [
-    'sucesso' => false,
-    'mensagem' => 'E-mail ou senha incorretos.'
-] );
+// Se o método não for nem GET nem POST
+http_response_code(405); // Method Not Allowed
+echo json_encode(['sucesso' => false, 'mensagem' => 'Método não permitido.']);
+?>

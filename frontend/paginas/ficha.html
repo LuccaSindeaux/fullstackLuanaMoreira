@@ -53,7 +53,7 @@
     <main class="ficha-container">
       <h2>Ficha de Anamnese</h2>
 
-      <form action="../php/salvar_ficha.php" method="POST" autocomplete="off">
+      <form id="fichaAnamneseForm" autocomplete="off">
         <label for="nome">Nome completo *</label>
         <input id="nome" name="nome" type="text" required />
 
@@ -131,6 +131,52 @@
         <p class="signature">Luana Moreira Fisioterapia e Hatha Yoga</p>
       </div>
     </footer>
+
     <script src="../js/index.js"></script>
+    <script src="../js/config.js"></script>
+
+    <!-- Conexão com o php de salvar ficha -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('fichaAnamneseForm');
+
+      // Pega a data que foi salva na página da agenda
+      const dataAgendamento = localStorage.getItem('data_agendamento');
+      if (dataAgendamento) {
+        document.getElementById('data_agendamento').value = dataAgendamento;
+      } else {
+        alert('Nenhuma data de agendamento selecionada. Por favor, volte para a agenda e escolha um horário.');
+      }
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const dados = Object.fromEntries(formData.entries());
+
+        fetch(`${API_URL}/php/salvar_ficha.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dados),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.sucesso) {
+            alert(data.mensagem);
+            localStorage.removeItem('data_agendamento');
+            window.location.href = '../index.html';
+          } else {
+            alert('Erro: ' + data.mensagem);
+          }
+        })
+        .catch(error => {
+          console.error('Erro na requisição:', error);
+          alert('Ocorreu um erro de comunicação. Tente novamente.');
+        });
+      });
+    });
+  </script>
   </body>
 </html>

@@ -1,25 +1,38 @@
 <?php
-require 'conexao.php';
-header( 'Content-Type: application/json' );
+require 'conexao.php'; 
+header('Content-Type: application/json'); 
 
-$sql = 'SELECT id, data, horario, status FROM disponibilidades';
-$result = $conn->query( $sql );
+// O 'is_admin' é definido na sessão durante o login.
+$is_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 
-$eventos = [];
+try {
+    $sql = "SELECT id, data_hora, status FROM disponibilidade ORDER BY data_hora ASC";
 
-while ( $row = $result->fetch_assoc() ) {
-    $start = $row[ 'data' ] . 'T' . $row[ 'horario' ];
-    $cor = $row[ 'status' ] === 'disponivel' ? '#27ae60' : '#7f8c8d';
+    // Se o usuário NÃO for um administrador, a condicional busca apenas horários com status 'disponivel'.
+    if (!$is_admin) {
+        $sql = "SELECT id, data_hora, status FROM disponibilidade WHERE status = 'disponivel' ORDER BY data_hora ASC";
+    }
 
-    $eventos[] = [
-        'id' => $row[ 'id' ],
-        'title' => ucfirst( $row[ 'status' ] ),
-        'start' => $start,
-        'allDay' => false,
-        'backgroundColor' => $cor,
-        'borderColor' => $cor,
-        'status' => $row[ 'status' ],
-    ];
+    $stmt = $pdo->query($sql);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $eventos = [];
+
+    foreach ($results as $row) {
+        // O JavaScript no dashboard.html e agenda.html usará o 'status'
+        $eventos[] = [
+            'id'    => $row['id'],
+            'start' => $row['data_hora'], 
+            'allDay' => false, 
+            'extendedProps' => [
+                'status' => $row['status']
+            ]
+        ];
+    }
+    
+    echo json_encode($eventos);
+
+} catch (PDOException $e) {
+    http_response_code(500); // Erro no Servidor
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao carregar os horários.']);
 }
-
-echo json_encode( $eventos );
+?>

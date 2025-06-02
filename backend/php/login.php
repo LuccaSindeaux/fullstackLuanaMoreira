@@ -1,52 +1,61 @@
 <?php
-session_start();
-header( 'Content-Type: application/json' );
+require 'conexao.php'; 
+header('Content-Type: application/json'); 
 
-// Conexão com o banco
-$host = 'localhost';
-$db = 'fisio';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    $email = $input['email'] ?? '';
+    $senha = $input['senha'] ?? '';
 
-try {
-    $pdo = new PDO( "mysql:host=$host;dbname=$db;charset=$charset", $user, $pass );
-    $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-} catch ( PDOException $e ) {
-    echo json_encode( [ 'sucesso' => false, 'mensagem' => 'Erro de conexão com o banco.' ] );
+    if (empty($email) || empty($senha)) {
+        http_response_code(400); 
+        echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail e senha são obrigatórios.']);
+        exit;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT id, nome, senha, admin FROM pacientes WHERE email = ?");
+        $stmt->execute([$email]);
+        $paciente = $stmt->fetch();
+
+        if ($paciente && password_verify($senha, $paciente['senha'])) {
+            
+            $_SESSION['paciente_id'] = $paciente['id'];
+            $_SESSION['paciente_nome'] = $paciente['nome'];
+            $_SESSION['is_admin'] = (bool)$paciente['admin'];
+
+            echo json_encode([
+                'sucesso' => true,
+                'nome' => $paciente['nome'],
+                'admin' => $_SESSION['is_admin']
+            ]);
+
+        } else {
+            http_response_code(401); // Unauthorized
+            echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha inválidos.']);
+        }
+    } catch (PDOException $e) {
+        http_response_code(500); // Erro no servidor
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro no servidor, tente novamente mais tarde.']);
+    }
     exit;
 }
 
-// Coleta os dados do formulário
-$email = $_POST[ 'email' ] ?? '';
-$senha = $_POST[ 'senha' ] ?? '';
 
-// Busca o usuário pelo e-mail
-$stmt = $pdo->prepare( 'SELECT * FROM usuarios WHERE email = ?' );
-$stmt->execute( [ $email ] );
-$usuario = $stmt->fetch( PDO::FETCH_ASSOC );
-
-if ( $usuario ) {
-    // As senhas estão com hash SHA256 ( sem `password_hash` ), então comparamos diretamente
-    $senha_hash = hash( 'sha256', $senha );
-
-    if ( $senha_hash === $usuario[ 'senha' ] ) {
-        // Login válido
-        $_SESSION[ 'usuario_id' ] = $usuario[ 'id' ];
-        $_SESSION[ 'usuario_nome' ] = $usuario[ 'nome' ];
-        $_SESSION[ 'is_admin' ] = $usuario[ 'is_admin' ];
-
-        echo json_encode( [
-            'sucesso' => true,
-            'nome' => $usuario[ 'nome' ],
-            'admin' => $usuario[ 'is_admin' ] == 1
-        ] );
-        exit;
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_SESSION['paciente_id'])) {
+        echo json_encode([
+            'logado' => true,
+            'admin' => isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true,
+            'paciente_id' => $_SESSION['paciente_id']
+        ]);
+    } else {
+        echo json_encode(['logado' => false]);
     }
+    exit;
 }
 
-// Login inválido
-echo json_encode( [
-    'sucesso' => false,
-    'mensagem' => 'E-mail ou senha incorretos.'
-] );
+http_response_code(405); // Method Not Allowed
+echo json_encode(['sucesso' => false, 'mensagem' => 'Método não permitido.']);
+?>

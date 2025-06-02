@@ -1,169 +1,124 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Tempo de geração: 21/05/2025 às 22:18
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.0.30
+-- Versão do script unificada para o projeto Luana Moreira Fisioterapia
+--
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+SET time_zone = "-03:00";
 
 --
--- Banco de dados: `fisio`
+-- Banco de dados: `luana_moreira_fisioterapia`
 --
+DROP DATABASE IF EXISTS `luana_moreira_fisioterapia`;
+CREATE DATABASE IF NOT EXISTS `luana_moreira_fisioterapia` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `luana_moreira_fisioterapia`;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `agendamentos`
+-- Estrutura da tabela `pacientes` (anteriormente `usuarios`)
 --
-
-CREATE TABLE `agendamentos` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) DEFAULT NULL,
-  `data` date DEFAULT NULL,
-  `status` varchar(20) DEFAULT NULL,
-  `pago` tinyint(1) DEFAULT NULL
+CREATE TABLE `pacientes` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `senha` VARCHAR(255) NOT NULL,
+  `telefone` VARCHAR(20) NULL,
+  `admin` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Inserindo dados de exemplo em `pacientes` com senhas seguras
+--
+INSERT INTO `pacientes` (`id`, `nome`, `email`, `senha`, `telefone`, `admin`) VALUES
+(1, 'Luana Moreira', 'luana@fisioweb.com', '$2y$10$yI.i9.UqX.qV9O1aVd9Vp.8X4B.uC2s4.lT.lI.i9.UqX.qV9O1aV', '51999998888', 1), -- Senha: admin123
+(2, 'João da Silva', 'joao@email.com', '$2y$10$sP.o3.nL.eR.t5s6u7v8w9xY.z1a2b3c4d5e6f7g8h9i', '51988887777', 0);     -- Senha: senha123
+
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `disponibilidades`
+-- Estrutura da tabela `disponibilidade` (anteriormente `disponibilidades`)
+-- Com as colunas `data_hora` e `status` corretas
 --
-
-CREATE TABLE `disponibilidades` (
-  `id` int(11) NOT NULL,
-  `data` date DEFAULT NULL
+CREATE TABLE `disponibilidade` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `data_hora` DATETIME NOT NULL,
+  `status` VARCHAR(20) NOT NULL DEFAULT 'disponivel', -- Ex: 'disponivel', 'indisponivel'
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `data_hora_unica` (`data_hora`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Inserindo dados de exemplo em `disponibilidade`
+--
+INSERT INTO `disponibilidade` (`data_hora`, `status`) VALUES
+('2025-06-09 09:00:00', 'disponivel'),
+('2025-06-09 10:00:00', 'disponivel'),
+('2025-06-10 14:00:00', 'disponivel'),
+('2025-06-10 15:00:00', 'disponivel');
+
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `fichas`
+-- Estrutura da tabela `fichas`
+-- Com a coluna `id_paciente` para relacionar com o paciente
 --
-
 CREATE TABLE `fichas` (
-  `id` int(11) NOT NULL,
-  `nome` varchar(100) DEFAULT NULL,
-  `idade` int(11) DEFAULT NULL,
-  `estado_civil` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `nascimento` date DEFAULT NULL,
-  `endereco` varchar(255) DEFAULT NULL,
-  `cep` varchar(20) DEFAULT NULL,
-  `bairro` varchar(100) DEFAULT NULL,
-  `telefone` varchar(30) DEFAULT NULL,
-  `praticou_yoga` varchar(10) DEFAULT NULL,
-  `alergia` varchar(10) DEFAULT NULL,
-  `quais_alergias` text DEFAULT NULL,
-  `plano_saude` varchar(100) DEFAULT NULL,
-  `contato_emergencia` varchar(100) DEFAULT NULL,
-  `coluna` text DEFAULT NULL,
-  `cirurgias` text DEFAULT NULL,
-  `atividade_fisica` varchar(10) DEFAULT NULL,
-  `qual_atividade` varchar(100) DEFAULT NULL
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_paciente` INT(11) NOT NULL,
+  `nome` VARCHAR(255) NULL,
+  `idade` INT(11) NULL,
+  `estado_civil` VARCHAR(50) NULL,
+  `email` VARCHAR(255) NULL,
+  `nascimento` DATE NULL,
+  `telefone` VARCHAR(20) NULL,
+  `praticou_yoga` VARCHAR(10) NULL,
+  `coluna` TEXT NULL,
+  `cirurgias` TEXT NULL,
+  `atividade_fisica` VARCHAR(10) NULL,
+  `qual_atividade` TEXT NULL,
+  `plano` VARCHAR(100) NULL,
+  `data_preenchimento` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `id_paciente` (`id_paciente`),
+  CONSTRAINT `fichas_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `usuarios`
+-- Estrutura da tabela `agendamentos`
+-- Com as colunas `id_paciente`, `id_disponibilidade`, `data_agendamento` e `plano` corretas
 --
-
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
-  `nome` varchar(100) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `senha` varchar(255) DEFAULT NULL,
-  `is_admin` tinyint(1) DEFAULT NULL
+CREATE TABLE `agendamentos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_paciente` INT(11) NOT NULL,
+  `id_disponibilidade` INT(11) NOT NULL,
+  `data_agendamento` DATETIME NOT NULL,
+  `plano` VARCHAR(100) NULL,
+  `status` VARCHAR(20) NOT NULL DEFAULT 'Confirmado',
+  `pago` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `id_paciente` (`id_paciente`),
+  KEY `id_disponibilidade` (`id_disponibilidade`),
+  CONSTRAINT `agendamentos_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `agendamentos_ibfk_2` FOREIGN KEY (`id_disponibilidade`) REFERENCES `disponibilidade` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `usuarios`
---
 
-INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `is_admin`) VALUES
-(1, 'Luana Moreira', 'luana@fisioweb.com', 'a0495c8bce87d18ecf0a82aa36dfe642781c6181602aca0a36bd4b37dd5f8470', 1),
-(2, 'João da Silva', 'joao@email.com', '2c10dfb4654f10327afd653709ef6d8e346b45960d9115d3544cafa51b340380', 0);
+-- Tabela para guaradr tokens de recriar senhas
+CREATE TABLE password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    KEY email_idx (email),
+    KEY token_idx (token)
+);
 
---
--- Índices para tabelas despejadas
---
 
---
--- Índices de tabela `agendamentos`
---
-ALTER TABLE `agendamentos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`);
-
---
--- Índices de tabela `disponibilidades`
---
-ALTER TABLE `disponibilidades`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `data` (`data`);
-
---
--- Índices de tabela `fichas`
---
-ALTER TABLE `fichas`
-  ADD PRIMARY KEY (`id`);
-
---
--- Índices de tabela `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT para tabelas despejadas
---
-
---
--- AUTO_INCREMENT de tabela `agendamentos`
---
-ALTER TABLE `agendamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `disponibilidades`
---
-ALTER TABLE `disponibilidades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `fichas`
---
-ALTER TABLE `fichas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Restrições para tabelas despejadas
---
-
---
--- Restrições para tabelas `agendamentos`
---
-ALTER TABLE `agendamentos`
-  ADD CONSTRAINT `agendamentos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
