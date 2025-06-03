@@ -29,6 +29,10 @@ CREATE TABLE `pacientes` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+--INSERT INTO `pacientes` (`id`, `nome`, ..., `admin`) VALUES
+--(1, 'Luana Moreira', ..., 1), -- Luana é admin
+
 --
 -- Inserindo dados de exemplo em `pacientes` com senhas seguras
 --

@@ -1,9 +1,5 @@
 <?php
-// backend/conexao.php
 
-// --- CONTROLE DE ACESSO (CORS) ---
-// Permite que o seu frontend (ex: http://localhost ou o seu domínio final) acesse este backend.
-// Substitua '*' por 'http://seu-dominio-do-frontend.com' em produção para mais segurança.
 header("Access-Control-Allow-Origin: *"); 
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
