@@ -1,6 +1,4 @@
 <?php
-// backend/php/verifica_login.php (VERSÃO FINAL LIMPA)
-
 require 'conexao.php'; 
 header('Content-Type: application/json');
 
