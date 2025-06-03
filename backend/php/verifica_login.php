@@ -1,14 +1,21 @@
 <?php
+// backend/php/verifica_login.php (VERSÃO FINAL LIMPA)
+
 require 'conexao.php'; 
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // ---- LINHAS DE DEBUG PARA A SESSÃO ----
+    error_log("VERIFICA_LOGIN (GET): Verificando sessão existente.");
+    error_log("VERIFICA_LOGIN (GET): ID da Sessão Atual: " . session_id());
+    error_log("VERIFICA_LOGIN (GET): Conteúdo da Sessão (\$_SESSION): " . print_r($_SESSION, true));
+    // -----------------------------------------
     if (isset($_SESSION['paciente_id'])) {
         echo json_encode([
             'logado' => true,
-            'admin' => isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true,
+            'admin' => isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true, // Deve funcionar
             'paciente_id' => $_SESSION['paciente_id'],
-            'nome' => $_SESSION['paciente_nome'] ?? ''
+            'nome' => $_SESSION['paciente_nome'] ?? 'Nome não encontrado'
         ]);
     } else {
         echo json_encode(['logado' => false]);
@@ -17,51 +24,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
     $input = json_decode(file_get_contents('php://input'), true);
-    $email = $input['email'] ?? '';
-    $senha = $input['senha'] ?? '';
+    $email_do_formulario = $input['email'] ?? '';
+    $senha_do_formulario = isset($input['senha']) ? trim($input['senha']) : ''; 
 
-    if (empty($email) || empty($senha)) {
+    if (empty($email_do_formulario) || empty($senha_do_formulario)) {
         http_response_code(400);
         echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail e senha são obrigatórios.']);
         exit;
     }
 
     try {
-        $stmt = $pdo->prepare("SELECT id, nome, senha, admin FROM pacientes WHERE email = ?");
-        $stmt->execute([$email]);
+        $stmt = $pdo->prepare("SELECT id, nome, email, senha, admin FROM pacientes WHERE email = ?");
+        $stmt->execute([$email_do_formulario]);
         $paciente = $stmt->fetch();
 
-        // VERIFICAÇÃO DE SENHA SEGURA com password_verify()
-        // Compara a senha digitada com o hash seguro salvo no banco.
-        if ($paciente && password_verify($senha, $paciente['senha'])) {
-            
-            // Se o login está correto: cria as variáveis de sessão...
+        if ($paciente && password_verify($senha_do_formulario, $paciente['senha'])) {
             $_SESSION['paciente_id'] = $paciente['id'];
             $_SESSION['paciente_nome'] = $paciente['nome'];
             $_SESSION['is_admin'] = (bool)$paciente['admin'];
-
-            // ... E envia a resposta de sucesso para o JavaScript.
             echo json_encode([
                 'sucesso' => true,
                 'nome' => $paciente['nome'],
                 'admin' => $_SESSION['is_admin']
             ]);
-
         } else {
-            // Se o paciente não existe ou a senha está incorreta
-            http_response_code(401); // Unauthorized
-            echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha inválidos.']);
+            http_response_code(401); 
+            if (!$paciente) {
+                echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha inválidos. (Usuário não encontrado)']);
+            } else {
+                echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha inválidos. (Senha não confere)']);
+            }
         }
     } catch (PDOException $e) {
-        http_response_code(500); // Erro no servidor
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro no servidor, tente novamente mais tarde.']);
+        http_response_code(500); 
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro no servidor ao tentar fazer login.']);
     }
     exit;
 }
 
-// Se o método não for nem GET nem POST
-http_response_code(405); // Method Not Allowed
+http_response_code(405); 
 echo json_encode(['sucesso' => false, 'mensagem' => 'Método não permitido.']);
 ?>

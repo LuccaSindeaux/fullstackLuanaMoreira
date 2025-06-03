@@ -229,7 +229,7 @@
 
             // --- 3. LÓGICA PARA LISTAR CLIENTES ---
             const listaClientesEl = document.getElementById('lista-clientes');
-            fetch(`${API_URL}/php/listar_clientes.php`)
+            fetch(`${API_URL}/php/listar_fichas.php`)
                 .then(res => res.json())
                 .then(clientes => {
                     listaClientesEl.innerHTML = ''; // Limpa a mensagem "carregando"

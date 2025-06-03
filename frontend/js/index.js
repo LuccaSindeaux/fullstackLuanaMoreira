@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const email = document.getElementById("modalEmail").value.trim();
       const senha = document.getElementById("modalSenha").value.trim();
-      const base = getBasePath();
 
       // Validação básica
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,34 +68,61 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Por favor, preencha o campo de senha.");
         return;
       }
+      const loginData = {
+        email: email,
+        senha: senha
+      };
 
-      fetch(`${API_URL}/php/verifica_login.php`, {
+      //Temporário 
+       const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(loginData)
+      };
+
+        console.log("DEBUG JS: Tentando fazer login com os seguintes dados:");
+        console.log("DEBUG JS: URL:", `${API_URL}/php/verifica_login.php`);
+        console.log("DEBUG JS: Opções da Requisição:", requestOptions);
+        console.log("DEBUG JS: Cabeçalhos enviados:", requestOptions.headers);
+        console.log("DEBUG JS: Corpo enviado (string JSON):", requestOptions.body);
+      //Temporário
+        fetch(`${API_URL}/php/verifica_login.php`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: `email=${encodeURIComponent(email)}&senha=${encodeURIComponent(
-          senha
-        )}`,
+        body: JSON.stringify(loginData)
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.sucesso) {
-            if (data.admin) {
-              window.location.href = base + "paginas/dashboard.html";
-            } else {
-              window.location.href = base + "#";
-            }
+      .then((res) => {
+        if (!res.ok) { 
+          return res.json().then(errData => {
+            throw new Error(errData.mensagem || `O servidor respondeu com erro: ${res.status}`);
+          }).catch(() => {
+            throw new Error(`O servidor respondeu com erro: ${res.status}`);
+          });
+        }
+        return res.json(); 
+      })
+      .then((data) => {
+        if (data.sucesso) {
+          if (data.admin) {
+            window.location.href = "paginas/dashboard.html";
           } else {
-            alert("Erro no login: " + data.mensagem);
+            window.location.href = "paginas/agenda.html"; 
           }
-        })
-        .catch((err) => {
-          console.error("Erro na requisição:", err);
-          alert("Erro ao tentar se conectar ao servidor.");
-        });
-    });
-  }
-});
+        } else {
+          alert("Erro no login: " + data.mensagem);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro na requisição ou processamento:", err);
+        alert(err.message || "Erro ao tentar se conectar ao servidor."); 
+      });
+    }); // chave do form.addEventListener
+  } // chave do if (loginForm)
+}); 
 
 // Abrir modal de login automático
 document.addEventListener("DOMContentLoaded", function () {
