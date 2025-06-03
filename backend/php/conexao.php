@@ -1,27 +1,18 @@
 <?php
-// backend/php/conexao.php
-
-// --- CONTROLE DE ACESSO (CORS) ---
-// Agora que frontend e backend devem estar em 'localhost',
-// o CORS se torna menos crítico, mas vamos manter para consistência.
 header("Access-Control-Allow-Origin: http://localhost"); // Permite requisições de http://localhost
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); 
 header("Access-Control-Allow-Credentials: true");
 
-// Trata as requisições OPTIONS "pre-flight"
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    // Se o navegador enviar um Access-Control-Request-Method, responda com os métodos permitidos.
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-        // Reafirma os métodos (não estritamente necessário se já definido acima, mas bom para clareza)
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
     }
-    // Se o navegador enviar um Access-Control-Request-Headers, responda com os cabeçalhos permitidos.
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
         header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
     }
     http_response_code(200);
-    exit(); // Encerra o script para requisições OPTIONS
+    exit(); 
 }
 
 // --- GERENCIAMENTO DE SESSÃO ---
@@ -29,8 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 86400, 
         'path' => '/',
-        // 'domain' => '', // Deixar vazio é geralmente melhor para localhost
-        'secure' => false, // Forçando false para HTTP local, já que não estamos em HTTPS
+        'secure' => false,
         'httponly' => true, 
         'samesite' => 'Lax' // 'Lax' é um bom padrão para a maioria dos casos
     ]);

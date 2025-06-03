@@ -5,11 +5,6 @@ require 'conexao.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // ---- LINHAS DE DEBUG PARA A SESSÃO ----
-    error_log("VERIFICA_LOGIN (GET): Verificando sessão existente.");
-    error_log("VERIFICA_LOGIN (GET): ID da Sessão Atual: " . session_id());
-    error_log("VERIFICA_LOGIN (GET): Conteúdo da Sessão (\$_SESSION): " . print_r($_SESSION, true));
-    // -----------------------------------------
     if (isset($_SESSION['paciente_id'])) {
         echo json_encode([
             'logado' => true,
