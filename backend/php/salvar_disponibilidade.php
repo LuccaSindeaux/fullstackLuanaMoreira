@@ -1,12 +1,10 @@
 <?php
-// backend/php/salvar_disponibilidade.php
 
-require 'conexao.php'; // Usa nossa conexão padrão com PDO ($pdo)
-header('Content-Type: application/json'); // Informa ao navegador que a resposta é JSON
+require 'conexao.php'; 
+header('Content-Type: application/json');
 
-// 1. VERIFICAÇÃO DE SEGURANÇA: Garante que apenas um admin logado pode usar este script.
 if (!isset($_SESSION['paciente_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    http_response_code(403); // Código de erro "Forbidden" (Acesso Negado)
+    http_response_code(403); 
     echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado. Apenas administradores podem realizar esta ação.']);
     exit;
 }

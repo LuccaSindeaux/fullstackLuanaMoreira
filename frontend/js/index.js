@@ -205,10 +205,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // FullCalendar (só agenda.html)
 document.addEventListener("DOMContentLoaded", function () {
-  const calendarEl = document.getElementById("calendar");
-  if (!calendarEl) return;
-
-  const base = getBasePath();
+  const calendarEl = document.getElementById("calendar"); 
+  if (!calendarEl) {
+    return; 
+  }
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "timeGridWeek",
@@ -223,14 +223,33 @@ document.addEventListener("DOMContentLoaded", function () {
       right: "dayGridMonth,timeGridWeek,timeGridDay",
     },
     events: {
-      url: base + "php/disponibilidade.php",
-      failure: () => alert("Erro ao carregar eventos"),
+      url: `${API_URL}/php/disponibilidade.php`, 
+      method: 'GET',
+      failure: function() {
+        alert('Erro ao carregar os horários disponíveis.'); 
+      },
+      eventDataTransform: function(eventInfo) {
+        return {
+          id: eventInfo.id,
+          title: 'Disponível', 
+          start: eventInfo.start,
+          allDay: eventInfo.allDay, 
+          extendedProps: eventInfo.extendedProps 
+        };
+      }
     },
     eventClick: function (info) {
-      fetch(`${API_URL}/php/verifica_login.php`, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
+      fetch(`${API_URL}/php/verifica_login.php`, {credentials: "include"}) 
+        .then((res) => {
+          if (!res.ok) { 
+            return res.json().then(errData => {
+              throw new Error(errData.mensagem || `Erro HTTP: ${res.status}`);
+            }).catch(() => {
+              throw new Error(`O servidor respondeu com erro: ${res.status} (e a resposta não era JSON)`);
+            });
+          }
+          return res.json();
+        })
         .then((data) => {
           if (!data.logado) {
             const modal = document.getElementById("loginModal");
@@ -243,21 +262,25 @@ document.addEventListener("DOMContentLoaded", function () {
           }
 
           const confirmar = confirm(
-            `Deseja agendar para ${info.event.start.toLocaleString()}?`
+            `Deseja agendar para ${new Date(info.event.start).toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'})}?`
           );
           if (confirmar) {
             localStorage.setItem(
               "data_agendamento",
-              info.event.start.toISOString()
+              info.event.start.toISOString() 
             );
-            window.location.href = "ficha.html";
+            window.location.href = "ficha.html"; 
           }
+        })
+        .catch(error => {
+            console.error("Erro ao verificar login para agendamento:", error);
+            alert(error.message || "Não foi possível verificar seu status de login. Tente novamente.");
         });
-    },
-  });
-
+    } 
+  }); 
   calendar.render();
-});
+
+}); // Fim do DOMContentLoaded fulCalendar
 
 // Logout
 function confirmarLogout(e) {
@@ -381,7 +404,24 @@ document.addEventListener("DOMContentLoaded", () => {
     slotMaxTime: "22:00:00",
     allDaySlot: false,
     selectable: true,
-    events: "../php/disponibilidade.php",
+    events: {
+    url: `${API_URL}/php/disponibilidade.php`, // <--- CORRIGIDO
+    method: 'GET', // Opcional, mas bom ser explícito
+    failure: function() {
+        alert('Erro ao carregar os horários disponíveis.'); // Mensagem de erro para o paciente
+    },
+    eventDataTransform: function(eventInfo) {
+        // Para o paciente, o backend já filtra para enviar apenas os 'disponivel'.
+        // Retornamos o evento com um título padrão.
+        return {
+            id: eventInfo.id, 
+            title: 'Disponível', 
+            start: eventInfo.start,
+            allDay: eventInfo.allDay,
+            extendedProps: eventInfo.extendedProps
+        };
+    }
+},
     select: (info) => {
       const status = prompt(
         "Digite 'd' para Disponível ou 'i' para Indisponível:",
