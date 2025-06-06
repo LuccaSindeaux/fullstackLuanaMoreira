@@ -34,14 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const dadosCadastro = { nome, email, telefone, senha };
 
-                const urlAlvo = `${API_URL}/php/cadastro.php`;
-                alert("O JavaScript está tentando fazer um fetch para a seguinte URL: \n\n" + urlAlvo);
-                fetch(urlAlvo, { // Modificado para usar a variável que criamos
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosCadastro)
-                })
-
                 fetch(`${API_URL}/php/cadastro.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
