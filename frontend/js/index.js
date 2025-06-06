@@ -284,35 +284,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Logout
 function confirmarLogout(e) {
-  if (e) e.preventDefault(); // Impede qualquer comportamento padrão do link/botão
-
-  // A variável 'base' e getBasePath() são da sua lógica original. 
-  // Se o redirecionamento para '../index.html' funcionar sem ela, melhor ainda.
-  // Mas vamos manter por enquanto, assumindo que getBasePath() está funcionando.
+  if (e) e.preventDefault(); 
   const base = getBasePath(); 
 
   if (confirm("Tem certeza que deseja sair?")) {
-    fetch(`${API_URL}/php/logout.php`, { // <--- CORREÇÃO 1: Chama o script logout.php
-      method: "POST", // <--- CORREÇÃO 2: Usar POST é mais semântico para uma ação que muda o estado
-      credentials: "include" // Importante para que logout.php receba o cookie de sessão
+    fetch(`${API_URL}/php/logout.php`, { 
+      method: "POST", 
+      credentials: "include" 
     })
     .then((res) => {
-      // Primeiro, verificamos se a resposta da rede foi ok
       if (!res.ok) {
-        // Se não foi OK (ex: erro 500 no PHP), jogamos um erro para o .catch()
         throw new Error(`Erro HTTP no logout: ${res.status}`);
       }
-      return res.json(); // Se foi OK, tentamos converter a resposta para JSON
+      return res.json(); 
     })
     .then((data) => {
-      // CORREÇÃO 3: Verificamos se o logout.php respondeu com sucesso
       if (data.sucesso) {
         alert("Você saiu com sucesso!");
-        // Redireciona para a página inicial. Quando ela carregar,
-        // o DOMContentLoaded vai rodar e atualizar os botões corretamente.
-        window.location.href = base + "index.html"; // Ou simplesmente '../index.html' ou './index.html' dependendo de onde está index.js
+        window.location.href = base + "index.html";
       } else {
-        // Isso não deveria acontecer se o logout.php estiver correto, mas é bom ter.
         alert("Ocorreu um erro no servidor ao tentar sair.");
       }
     })
@@ -323,16 +313,11 @@ function confirmarLogout(e) {
   }
 }
 
-// Esta linha continua correta, ela liga a função ao botão
-const btnSairElement = document.getElementById("btn-sair"); // Usei um nome de var diferente para clareza
+const btnSairElement = document.getElementById("btn-sair"); 
 if (btnSairElement) {
     btnSairElement.addEventListener("click", confirmarLogout);
 }
 
-
-// A parte do DOMContentLoaded que atualiza a visibilidade dos botões está correta
-// e deve ser mantida como está, pois ela reflete o estado atual do login
-// quando a página é carregada ou recarregada.
 window.addEventListener("DOMContentLoaded", () => {
   const base = getBasePath();
 
@@ -342,7 +327,7 @@ window.addEventListener("DOMContentLoaded", () => {
   })
     .then((res) => res.json())
     .then((data) => {
-      const btnSair = document.getElementById("btn-sair"); // Pode renomear para btnSairNav ou similar
+      const btnSair = document.getElementById("btn-sair"); 
       const btnLogin = document.getElementById("btn-login");
 
       if (!btnSair || !btnLogin) return;
@@ -357,7 +342,6 @@ window.addEventListener("DOMContentLoaded", () => {
     })
     .catch((err) => console.error("Erro ao verificar login na carga da página:", err));
 });
-// Ocultar campos de atividade física e alergia
 function toggleQualAtividade() {
   const select = document.getElementById("atividade_fisica");
   const campo = document.getElementById("campo_qual_atividade");
@@ -405,10 +389,10 @@ document.addEventListener("DOMContentLoaded", () => {
     allDaySlot: false,
     selectable: true,
     events: {
-    url: `${API_URL}/php/disponibilidade.php`, // <--- CORRIGIDO
-    method: 'GET', // Opcional, mas bom ser explícito
+    url: `${API_URL}/php/disponibilidade.php`, 
+    method: 'GET', 
     failure: function() {
-        alert('Erro ao carregar os horários disponíveis.'); // Mensagem de erro para o paciente
+        alert('Erro ao carregar os horários disponíveis.'); 
     },
     eventDataTransform: function(eventInfo) {
         // Para o paciente, o backend já filtra para enviar apenas os 'disponivel'.

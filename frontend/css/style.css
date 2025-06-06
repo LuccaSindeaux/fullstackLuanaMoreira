@@ -1,4 +1,30 @@
-/* Reset e estilos globais */Add commentMore actions
+/* =========================
+   Variáveis CSS para Cores
+   ========================= */
+:root {
+  --color-primary: #476e52;
+  /* Verde escuro usado no header e seções */
+  --color-secondary: #e2a091;
+  /* Tom salmão para destaques e hover */
+  --color-accent: #f4baac;
+  /* Cor clara para botões e indicadores */
+  --color-bg-light: #f5f5f5;
+  /* Fundo claro para banners e planos */
+  --color-bg-white: #ffffff;
+  /* Branco padrão */
+  --color-text-dark: #000000;
+  /* Texto preto padrão */
+  --color-text-light: #ffffff;
+  /* Texto branco */
+  --color-green-hover: #365d43;
+  /* Verde mais escuro para hover */
+  --color-modal-overlay: rgba(0, 0, 0, 0.7);
+  /* Fundo modal escuro com transparência */
+}
+
+/* =========================
+     Reset e Estilos Globais
+     ========================= */
 * {
   margin: 0;
   padding: 0;
@@ -7,25 +33,26 @@
 }
 
 body {
-  background: white;
+  background: var(--color-bg-white);
   overflow-x: hidden;
-  margin: 0 ;
   font-size: 16px;
   position: relative;
 }
 
-/* Header */
+/* =========================
+     Header
+     ========================= */
 .header {
   width: 100%;
   height: 110px;
-  background: #476e52;
-  border-bottom: 1px solid black;
+  background: var(--color-primary);
+  border-bottom: 1px solid var(--color-secondary);
   position: fixed;
   top: 0;
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 0 5%;
 }
 
@@ -46,14 +73,15 @@ body {
   transform: scale(1.05);
 }
 
+/* Navegação principal */
 .nav-links {
   display: flex;
   gap: 2rem;
 }
 
 .nav-links a {
-  color: #fff;
-  font-size: 1.2rem;
+  color: var(--color-text-light);
+  font-size: 1.4rem;
   font-family: "Kalam", cursive;
   font-weight: 400;
   text-decoration: none;
@@ -62,12 +90,15 @@ body {
 }
 
 .nav-links a:hover {
-  color: #e2a091;
+  color: var(--color-secondary);
 }
 
-/* Menu hamburguer */
+/* =========================
+     Menu Hambúrguer (Mobile)
+     ========================= */
 .menu-toggle {
   display: none;
+  /* Ativado em responsivo */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -84,7 +115,7 @@ body {
 
 .menu-toggle span {
   display: block;
-  background-color: white;
+  background-color: var(--color-text-light);
   height: 2px;
   width: 22px;
   margin: 3.5px 0;
@@ -104,12 +135,17 @@ body {
   transform: translateY(-5.5px) rotate(-45deg);
 }
 
-/* Conteúdo principal */
+/* =========================
+     Conteúdo Principal
+     ========================= */
 .main-content {
   margin-top: 80px;
+  /* Espaço para o header fixo */
 }
 
-/* Boas-vindas */
+/* =========================
+     Seção Boas-Vindas
+     ========================= */
 .welcome-section {
   position: relative;
   height: 90vh;
@@ -135,97 +171,89 @@ body {
   opacity: 0.8;
 }
 
-/* Ajuste do título */
 .welcome-title {
-  color: black;
-  font-size: 2.5rem; /* Aumentei um pouco o tamanho */
+  color: var(--color-text-dark);
+  font-size: 2.5rem;
   font-family: "Kalam", cursive;
   font-weight: 400;
   margin-top: 30px;
-  padding: 0 20px; /* Para não colar nas bordas em mobile */
+  padding: 0 20px;
 }
 
-/* Faixa branca com o título */
+/* Faixa branca com título */
 .welcome-banner {
   width: 100%;
-  height: 150px; /* Altura fixa para a faixa branca */
+  height: 150px;
+  background: var(--color-bg-white);
   display: flex;
-  align-items: center; /* Centraliza verticalmente */
-  justify-content: center; /* Centraliza horizontalmente */
-  background: white;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 15px;
   text-align: center;
   z-index: 10;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  flex-direction: row; /* Para alinhar imagem e texto lado a lado */
-  gap: 15px; /* Espaço entre imagem e texto */
 }
 
-.schedule-button {
-  position: relative;
-  z-index: 2;
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  background-color: white;
-  color: black;
-  border: none;
-  border-radius: 30px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.schedule-button:hover {
-  background-color: #e6e6e6;
-  transform: scale(1.05);
-}
-
+/* Botão de Agendamento */
 .schedule-button {
   width: 280px;
   height: 50px;
-  background: #8e8e8e;
+  background: var(--color-primary);
   border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-light);
   font-size: 1.3rem;
   font-family: "Kalam", cursive;
   font-weight: 400;
   text-decoration: none;
   margin-top: 2rem;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.3s ease;
+  position: relative;
+  z-index: 2;
+  padding: 15px 30px;
+  border: none;
 }
 
 .schedule-button:hover {
-  background: #787878;
+  background: var(--color-green-hover);
+  transform: scale(1.05);
 }
 
-/* Seção de descrição */
+/* =========================
+     Seção de Descrição
+     ========================= */
 .description-section {
   margin-top: 7rem;
   text-align: center;
 }
 
 .description-text {
-  color: black;
+  color: var(--color-text-dark);
   font-size: 1.3rem;
   font-family: "Montserrat Alternates", sans-serif;
   font-weight: 400;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem;
   line-height: 1.6;
   max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-/* Seções genéricas */
+/* =========================
+     Seções Genéricas
+     ========================= */
 .section {
   padding: 4rem 5%;
   position: relative;
 }
 
-/* Slider */
+/* =========================
+     Slider (Carrossel)
+     ========================= */
 .slider-section {
   padding: 4rem 5%;
+  margin-top: 3rem;
   text-align: center;
 }
 
@@ -253,12 +281,13 @@ body {
   display: block;
 }
 
+/* Botões do slider */
 .slider-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(71, 110, 82, 0.7);
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-text-light);
   border: none;
   padding: 1rem;
   cursor: pointer;
@@ -268,16 +297,18 @@ body {
 }
 
 .slider-btn:hover {
-  background: #476e52;
+  background: var(--color-secondary);
 }
 
 .prev-btn {
   left: 10px;
 }
+
 .next-btn {
   right: 10px;
 }
 
+/* Indicadores do slider */
 .slider-dots {
   display: flex;
   justify-content: center;
@@ -295,20 +326,21 @@ body {
 }
 
 .dot.active {
-  background: #476e52;
+  background: var(--color-accent);
 }
 
-/* Sobre */
+/* =========================
+     Seção Sobre
+     ========================= */
 .sobre-section {
-  background-color: #476e52;
+  background-color: var(--color-primary);
   padding: 40px 20px;
   margin: 150px 0;
-  color: #fff;
+  color: var(--color-text-light);
   text-align: center;
 }
 
 .sobre-container {
-  
   height: 500px;
   margin: 0 auto;
   display: flex;
@@ -342,14 +374,16 @@ body {
   line-height: 1.6;
 }
 
-/* Contato */
+/* =========================
+     Seção Contato
+     ========================= */
 .contact-section {
-  background: #476e52;
+  background: var(--color-primary);
   padding: 4rem 5%;
 }
 
 .contact-title {
-  color: #f4baac;
+  color: var(--color-accent);
   font-size: 2.5rem;
   font-family: "Kalam", cursive;
   font-weight: 700;
@@ -357,7 +391,7 @@ body {
 }
 
 .phone {
-  color: #ffffff;
+  color: var(--color-text-light);
   font-size: 1.3rem;
   font-weight: 500;
   text-align: center;
@@ -365,44 +399,46 @@ body {
 }
 
 .social-title {
-  color: #e2a091;
+  color: var(--color-secondary);
   font-size: 1.3rem;
   font-weight: 500;
   text-align: center;
   margin-bottom: 2rem;
 }
 
+/* Ícones sociais */
 .social-icons {
   display: flex;
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
-  
 }
 
 .social-icon {
   width: 50px;
   height: 50px;
-  background: white;
+  background: var(--color-bg-white);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #476e52;
+  color: var(--color-primary);
   font-size: 1.5rem;
   text-decoration: none;
   transition: background 0.3s, color 0.3s;
 }
 
 .social-icon:hover {
-  background: #e2a091;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-bg-white);
 }
 
-/* Rodapé */
+/* =========================
+     Rodapé
+     ========================= */
 .footer-menu {
   height: 80px;
-  background: #e2a091;
+  background: var(--color-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,30 +448,33 @@ body {
 }
 
 .footer-menu a {
-  color: black;
-  font-size: 1.1rem;
+  color: var(--color-text-dark);
+  font-size: 1.3rem;
   font-family: "Kalam", cursive;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .footer-menu a:hover {
-  color: #ffffff;
+  color: var(--color-bg-white);
 }
 
 .footer-final {
   height: 80px;
-  background: #476e52;
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .signature {
-  color: white;
+  color: var(--color-bg-white);
   font-size: 1rem;
 }
 
+/* =========================
+     Títulos de Seção
+     ========================= */
 .section-title {
   margin-top: 1rem;
   margin-bottom: 3rem;
@@ -443,11 +482,13 @@ body {
   text-align: center;
 }
 
-/* Planos */
 #planos .section-title {
   margin-top: 6rem;
 }
 
+/* =========================
+     Planos
+     ========================= */
 .planos-container {
   display: flex;
   flex-direction: column;
@@ -457,7 +498,7 @@ body {
 .plano-banner {
   display: flex;
   flex-direction: row;
-  background: #f5f5f5;
+  background: var(--color-bg-light);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -482,7 +523,7 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-light);
   font-family: "Kalam", cursive;
 }
 
@@ -496,13 +537,13 @@ body {
 
 .plano-info p {
   font-size: 1.4rem;
-
 }
 
+/* Botão para planos */
 .btn-plano {
   display: inline-block;
-  background: #e2a091;
-  color: white;
+  background: var(--color-secondary);
+  color: var(--color-bg-white);
   padding: 12px 20px;
   margin-top: 1rem;
   border-radius: 30px;
@@ -517,7 +558,9 @@ body {
   background: #d08074;
 }
 
-/* Modal de Login */
+/* =========================
+     Modal de Login
+     ========================= */
 .login-modal {
   display: none;
   position: fixed;
@@ -526,15 +569,12 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.login-modal {
+  background-color: var(--color-modal-overlay);
   margin-bottom: 20px;
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-white);
   margin: 10% auto;
   padding: 25px;
   width: 90%;
@@ -544,11 +584,18 @@ body {
   animation: modalFadeIn 0.3s;
 }
 
+.modal-content h2 {
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
 @keyframes modalFadeIn {
   from {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -565,10 +612,12 @@ body {
 }
 
 .close-modal:hover {
-  color: #476e52;
+  color: var(--color-primary);
 }
 
-/* Formulário */
+/* =========================
+     Formulário de Login
+     ========================= */
 #loginForm {
   display: flex;
   flex-direction: column;
@@ -582,23 +631,29 @@ body {
 }
 
 #loginForm button {
-  background: #476e52;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-white);
   padding: 12px;
   border: none;
   border-radius: 6px;
+  font-size: 1.1rem;
   cursor: pointer;
 }
 
+#loginForm button:hover {
+  background: #53805f;
+}
+
+/* Links de cadastro e recuperação de senha */
 .forgot-password {
   text-align: center;
   display: block;
   margin-top: 10px;
-  color: #476e52;
+  color: var(--color-primary);
 }
 
 .auth-form a {
-  color: #e2a091;
+  color: var(--color-secondary);
   text-decoration: none;
 }
 
@@ -606,12 +661,14 @@ body {
   text-decoration: underline;
 }
 
- .auth-form input:focus {
-  border-color: #e2a091 !important;
+.auth-form input:focus {
+  border-color: var(--color-secondary) !important;
   outline: none;
 }
 
-/* Estilo para Login e Recuperação de Senha */
+/* =========================
+     Página de autenticação (Login e Recuperação)
+     ========================= */
 .auth-page {
   display: flex;
   flex-direction: column;
@@ -626,12 +683,12 @@ body {
 .auth-page h1 {
   font-size: 2rem;
   margin-bottom: 30px;
-  color: #e2a091;
+  color: var(--color-secondary);
   text-align: center;
 }
 
 .auth-page .auth-form {
-  background-color: #fff;
+  background-color: var(--color-bg-white);
   padding: 30px 40px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -659,8 +716,8 @@ body {
 .auth-page .auth-form button {
   width: 100%;
   padding: 12px;
-  background-color: #e2a091;
-  color: #fff;
+  background-color: var(--color-secondary);
+  color: var(--color-bg-white);
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -669,19 +726,11 @@ body {
 }
 
 .auth-page .auth-form button:hover {
-  background-color: rgb(218, 145, 128);
+  background-color: #d08074;
 }
 
-.auth-page .auth-form p {
-  margin-top: 15px;
+.auth-form .login-trigger {
+  display: block;
   text-align: center;
-}
-
-.auth-page .auth-form a {
-  color: #e2a091;
-  text-decoration: none;
-}
-
-.auth-page .auth-form a:hover {
-  text-decoration: underline;
+  margin-top: 20px;
 }
