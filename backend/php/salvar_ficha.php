@@ -1,73 +1,72 @@
 <?php
-require 'conexao.php'; 
+require 'conexao.php';
 header('Content-Type: application/json');
 
-// 1. VERIFICA SE O PACIENTE ESTÁ LOGADO (usando nosso padrão 'paciente_id')
 if (!isset($_SESSION['paciente_id'])) {
-    http_response_code(401); 
+    http_response_code(401);
     echo json_encode(['sucesso' => false, 'mensagem' => 'Você precisa estar logado para agendar.']);
     exit;
 }
-$id_paciente = $_SESSION['paciente_id'];
 
-// 2. PEGA OS DADOS JSON ENVIADOS PELO JAVASCRIPT
 $dados = json_decode(file_get_contents('php://input'), true);
 
-if (!$dados) {
-    http_response_code(400); 
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Nenhum dado recebido.']);
+if (!$dados || !isset($dados['data_agendamento'], $dados['plano'])) {
+    http_response_code(400);
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Dados incompletos para o agendamento.']);
     exit;
 }
 
-// 3. ATRIBUI OS DADOS A VARIÁVEIS
-$data_agendamento = $dados['data_agendamento'] ?? null;
-$plano = $dados['plano'] ?? null;
+$id_paciente = $_SESSION['paciente_id'];
+$iso_data_agendamento = $dados['data_agendamento']; // Data em formato ISO UTC (ex: ...T12:00:00.000Z)
+$plano = $dados['plano'];
 
 try {
-    // 4. INSERE OS DADOS NA TABELA 'fichas'
+    // --- CORREÇÃO DE FUSO HORÁRIO ---
+    $date_obj_utc = new DateTime($iso_data_agendamento);
+    $fuso_horario_local = new DateTimeZone('America/Sao_Paulo');
+    // Converte o objeto de data de UTC para o fuso horário local
+    $date_obj_local = $date_obj_utc->setTimezone($fuso_horario_local);
+    
+    // Formata o objeto para a string no padrão do MySQL DATETIME ('YYYY-MM-DD HH:MM:SS')
+    $mysql_datetime_format = $date_obj_local->format('Y-m-d H:i:s');
+    // -----------------------------------------------------------------------------
+
+    $stmtHorario = $pdo->prepare("SELECT id FROM disponibilidade WHERE data_hora = ? AND status = 'disponivel'");
+    $stmtHorario->execute([$mysql_datetime_format]); // <<< Usa a variável corrigida
+    $horario = $stmtHorario->fetch();
+
+    if (!$horario) {
+        http_response_code(409); // Conflict
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Desculpe, este horário foi agendado por outra pessoa enquanto você preenchia a ficha. Por favor, escolha outro.']);
+        exit;
+    }
+    $id_disponibilidade = $horario['id'];
+
+    // Inserir os dados da ficha na tabela 'fichas'
     $stmtFicha = $pdo->prepare(
-        "INSERT INTO fichas (
-            id_paciente, nome, idade, estado_civil, email, nascimento, telefone,
-            praticou_yoga, coluna, cirurgias, atividade_fisica, qual_atividade, plano
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO fichas (id_paciente, nome, idade, estado_civil, email, nascimento, telefone, praticou_yoga, coluna, cirurgias, atividade_fisica, qual_atividade, plano) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     $stmtFicha->execute([
-        $id_paciente, $dados['nome'], $dados['idade'], $dados['estado_civil'], $dados['email'], 
-        $dados['nascimento'], $dados['telefone'], $dados['praticou_yoga'], $dados['coluna'], 
-        $dados['cirurgias'], $dados['atividade_fisica'], $dados['qual_atividade'] ?? null, $plano
+        $id_paciente, $dados['nome'] ?? null, $dados['idade'] ?? null, $dados['estado_civil'] ?? null, $dados['email'] ?? null, 
+        $dados['nascimento'] ?? null, $dados['telefone'] ?? null, $dados['praticou_yoga'] ?? null, $dados['coluna'] ?? null, 
+        $dados['cirurgias'] ?? null, $dados['atividade_fisica'] ?? null, $dados['qual_atividade'] ?? null, $plano
     ]);
 
-    // 5. CRIA O AGENDAMENTO FINAL (se uma data foi fornecida)
-    if ($data_agendamento) {
-        // Encontra o ID do horário na tabela de disponibilidade
-        $stmtHorario = $pdo->prepare("SELECT id FROM disponibilidade WHERE data_hora = ? AND status = 'disponivel'");
-        $stmtHorario->execute([$data_agendamento]);
-        $horario = $stmtHorario->fetch();
+    // Inserir na tabela de agendamentos
+    $stmtAgendamento = $pdo->prepare(
+        "INSERT INTO agendamentos (id_paciente, id_disponibilidade, data_agendamento, plano, status) VALUES (?, ?, ?, ?, 'Confirmado')"
+    );
+    $stmtAgendamento->execute([$id_paciente, $id_disponibilidade, $mysql_datetime_format, $plano]);
 
-        if (!$horario) {
-            http_response_code(409); // Conflict
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Desculpe, este horário foi agendado por outra pessoa enquanto você preenchia a ficha. Por favor, escolha outro.']);
-            exit;
-        }
-        $id_disponibilidade = $horario['id'];
+    // Marcar o horário como indisponível
+    $stmtUpdate = $pdo->prepare("UPDATE disponibilidade SET status = 'indisponivel' WHERE id = ?");
+    $stmtUpdate->execute([$id_disponibilidade]);
 
-        // Insere o agendamento
-        $stmtAgendamento = $pdo->prepare(
-            "INSERT INTO agendamentos (id_paciente, id_disponibilidade, data_agendamento, plano, status) VALUES (?, ?, ?, ?, 'Confirmado')"
-        );
-        $stmtAgendamento->execute([$id_paciente, $id_disponibilidade, $data_agendamento, $plano]);
+    echo json_encode(['sucesso' => true, 'mensagem' => 'Agendamento e ficha enviados com sucesso! Você será redirecionado.']);
 
-        // Marca o horário como indisponível para outros
-        $stmtUpdate = $pdo->prepare("UPDATE disponibilidade SET status = 'indisponivel' WHERE id = ?");
-        $stmtUpdate->execute([$id_disponibilidade]);
-    }
-
-    // 6. ENVIA A RESPOSTA DE SUCESSO EM FORMATO JSON
-    echo json_encode(['sucesso' => true, 'mensagem' => 'Ficha e agendamento enviados com sucesso!']);
-
-} catch (PDOException $e) {
-    http_response_code(500); // Internal Server Error
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Ocorreu um erro no servidor. Tente novamente.']);
-    // Para depuração: error_log($e->getMessage());
+} catch (Exception $e) {
+    http_response_code(500);
+    error_log("Erro em salvar_ficha.php: " . $e->getMessage());
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Ocorreu um erro inesperado no servidor.']);
 }
 ?>
