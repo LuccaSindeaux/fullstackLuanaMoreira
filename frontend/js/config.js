@@ -1,6 +1,3 @@
-// config.js
-// frontend/js/config.js
-
 const API_URL = "http://localhost/fullstackLuanaMoreira/backend";
 
 
