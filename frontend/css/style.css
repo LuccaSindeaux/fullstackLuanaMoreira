@@ -734,3 +734,28 @@ body {
   text-align: center;
   margin-top: 20px;
 }
+
+
+    /* ================
+    Modal das fichas  
+    ==================*/
+.conteudo-fichas-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-top: 1rem;
+}
+.ficha-individual {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+.ficha-individual h4 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-top: 0;
+}
+.ficha-individual p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}

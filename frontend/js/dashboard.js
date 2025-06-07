@@ -1,6 +1,71 @@
- function verFichas(clienteId) {
-            alert(`Funcionalidade "Ver Fichas" para o cliente ${clienteId} a ser implementada.`);
-        }
+function verFichas(clienteId, clienteNome) {
+    const modal = document.getElementById('modalVerFichas');
+    const conteudoEl = document.getElementById('conteudoFichas');
+    const nomeClienteEl = document.getElementById('nomeClienteModal');
+
+    // Mostra uma mensagem de "carregando"
+    nomeClienteEl.textContent = `Fichas de: ${clienteNome}`;
+    conteudoEl.innerHTML = '<p>Buscando fichas...</p>';
+    modal.style.display = 'flex';
+
+    // Faz a chamada para o novo script PHP
+    fetch(`${API_URL}/php/buscar_fichas.php?id_paciente=${clienteId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso && data.fichas.length > 0) {
+                conteudoEl.innerHTML = ''; // Limpa o "carregando"
+                
+                // Para cada ficha encontrada, cria um bloco de HTML
+                data.fichas.forEach(ficha => {
+                    const dataPreenchimento = new Date(ficha.data_preenchimento).toLocaleString('pt-BR');
+                    
+                    const fichaDiv = document.createElement('div');
+                    fichaDiv.className = 'ficha-individual';
+                    
+                    // Constrói o HTML com os detalhes da ficha. Adapte conforme os campos da sua tabela 'fichas'.
+                    fichaDiv.innerHTML = `
+                        <h4>Preenchida em: ${dataPreenchimento}</h4>
+                        <p><strong>Plano:</strong> ${ficha.plano || 'Não informado'}</p>
+                        <p><strong>Praticou Yoga?</strong> ${ficha.praticou_yoga || 'Não informado'}</p>
+                        <p><strong>Problemas na coluna?</strong> ${ficha.coluna || 'Não informado'}</p>
+                        <p><strong>Cirurgias?</strong> ${ficha.cirurgias || 'Não informado'}</p>
+                        <p><strong>Faz atividade física?</strong> ${ficha.atividade_fisica || 'Não informado'}</p>
+                        <p><strong>Qual?</strong> ${ficha.qual_atividade || 'Não informado'}</p>
+                    `;
+                    conteudoEl.appendChild(fichaDiv);
+                });
+            } else {
+                conteudoEl.innerHTML = '<p>Nenhuma ficha de anamnese encontrada para este cliente.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar fichas:', error);
+            conteudoEl.innerHTML = '<p>Ocorreu um erro ao buscar as fichas. Tente novamente.</p>';
+        });
+}
+
+// Dentro do seu DOMContentLoaded, adicione a lógica para fechar o novo modal
+document.addEventListener('DOMContentLoaded', function() {
+    // ... todo o seu código existente do dashboard (calendário, etc) ...
+
+    const modalVerFichas = document.getElementById('modalVerFichas');
+    const fecharModalFichas = document.getElementById('fecharModalFichas');
+
+    if (fecharModalFichas) {
+        fecharModalFichas.addEventListener('click', () => {
+            modalVerFichas.style.display = 'none';
+        });
+    }
+
+    // Também fechar se clicar fora do conteúdo do modal
+    if (modalVerFichas) {
+        modalVerFichas.addEventListener('click', (event) => {
+            if (event.target === modalVerFichas) {
+                modalVerFichas.style.display = 'none';
+            }
+        });
+    }
+})
 
         document.addEventListener('DOMContentLoaded', function () {
             fetch(`${API_URL}/php/verifica_login.php`)
@@ -64,7 +129,7 @@
                             <h4>${cliente.nome}</h4>
                             <p><strong>E-mail:</strong> ${cliente.email}</p>
                             <p><strong>Telefone:</strong> ${cliente.telefone || 'Não informado'}</p>
-                            <button onclick="verFichas(${cliente.id})">Ver Fichas de Anamnese</button>
+                            <button onclick="verFichas(${cliente.id}, '${cliente.nome}')">Ver Fichas de Anamnese</button>
                         `;
                         listaClientesEl.appendChild(clienteDiv);
                     });
@@ -92,12 +157,23 @@
                     url: `${API_URL}/php/disponibilidade.php`,
                 },
                 eventDataTransform: function(eventInfo) {
-                    if (eventInfo.extendedProps.status === 'indisponivel') {
-                        eventInfo.backgroundColor = '#7f8c8d';
+                    const props = eventInfo.extendedProps;
+                    
+                    // Se o status for 'indisponivel'...
+                    if (props.status === 'indisponivel') {
+                        eventInfo.backgroundColor = '#7f8c8d'; // Cor cinza para ocupado
                         eventInfo.borderColor = '#7f8c8d';
-                        eventInfo.title = 'Indisponível';
-                    } else {
-                        eventInfo.backgroundColor = '#27ae60';
+                        
+                        // ...e se tiver um nome de paciente, usa ele como título.
+                        if (props.nome_paciente) {
+                            eventInfo.title = props.nome_paciente; 
+                        } else {
+                            // Se por algum motivo não tiver nome, mostra "Ocupado"
+                            eventInfo.title = 'Ocupado';
+                        }
+                    } else { 
+                        // Se o status for 'disponivel', continua como antes.
+                        eventInfo.backgroundColor = '#27ae60'; // Cor verde para disponível
                         eventInfo.borderColor = '#27ae60';
                         eventInfo.title = 'Disponível';
                     }
